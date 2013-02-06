@@ -67,6 +67,7 @@ class JailReader(ConfigReader):
 				["int", "bantime", 600],
 				["string", "usedns", "warn"],
 				["string", "failregex", None],
+				["string", "failmodel", None],
 				["string", "ignoreregex", None],
 				["string", "ignoreip", None],
 				["string", "filter", ""],

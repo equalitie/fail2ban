@@ -1,0 +1,25 @@
+
+
+# this file is read after jail.conf
+
+# check for high frequency requests to any resource
+[ats-ddos]
+enabled = true
+port = http,https
+filter = ats-ddos
+logpath = logs/deflect.log
+maxretry = 100
+findtime = 20
+bantime = 300
+action = iptables[name=HTTP, port=http, protocol=tcp]
+
+# testing a fail model based filter
+[ats-ddos-model]
+enabled = true
+port = http,https
+filter = ats-ddos-model
+logpath = logs/deflect.log
+maxretry = 1
+findtime = 600
+bantime = 300
+action = iptables[name=HTTP, port=http, protocol=tcp]

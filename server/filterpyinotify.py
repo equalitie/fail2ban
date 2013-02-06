@@ -26,7 +26,7 @@ __license__ = "GPL"
 from distutils.version import LooseVersion
 
 from failmanager import FailManagerEmpty
-from filter import FileFilter
+from ai_filter import AIFilter
 from mytime import MyTime
 
 import time, logging, pyinotify
@@ -47,7 +47,7 @@ logSys = logging.getLogger("fail2ban.filter")
 # that matches a given regular expression. This class is instantiated by
 # a Jail object.
 
-class FilterPyinotify(FileFilter):
+class FilterPyinotify(AIFilter):
 	##
 	# Constructor.
 	#

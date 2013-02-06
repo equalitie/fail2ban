@@ -27,7 +27,7 @@ __copyright__ = "Copyright (c) 2004 Cyril Jaquier; 2012 Yaroslav Halchenko"
 __license__ = "GPL"
 
 from failmanager import FailManagerEmpty
-from filter import FileFilter
+from ai_filter import AIFilter
 from mytime import MyTime
 
 import time, logging, os
@@ -42,7 +42,7 @@ logSys = logging.getLogger("fail2ban.filter")
 # that matches a given regular expression. This class is instanciated by
 # a Jail object.
 
-class FilterPoll(FileFilter):
+class FilterPoll(AIFilter):
 
 	##
 	# Constructor.
@@ -51,7 +51,7 @@ class FilterPoll(FileFilter):
 	# @param jail the jail object
 
 	def __init__(self, jail):
-		FileFilter.__init__(self, jail)
+		AIFilter.__init__(self, jail)
 		self.__modified = False
 		## The time of the last modification of the file.
 		self.__lastModTime = dict()

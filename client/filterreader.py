@@ -57,10 +57,12 @@ class FilterReader(ConfigReader):
 	
 	def getOptions(self, pOpts):
 		opts = [["string", "ignoreregex", ""],
-				["string", "failregex", ""]]
+				["string", "failregex", "failmodel", ""]]
 		self.__opts = ConfigReader.getOptions(self, "Definition", opts, pOpts)
 	
 	def convert(self):
+		import pdb
+		pdb.set_trace()
 		stream = list()
 		for opt in self.__opts:
 			if opt == "failregex":
@@ -68,6 +70,12 @@ class FilterReader(ConfigReader):
 					# Do not send a command if the rule is empty.
 					if regex != '':
 						stream.append(["set", self.__name, "addfailregex", regex])
+			elif opt == "failmodel":
+				#only one model per filter is allowed for now
+				model = self.__opts[opt].split('\n')[0]
+			        # Do not send a command if the rule is empty.
+				if model != '':
+					stream.append(["set", self.__name, "addfailmodel", model])
 			elif opt == "ignoreregex":
 				for regex in self.__opts[opt].split('\n'):
 					# Do not send a command if the rule is empty.

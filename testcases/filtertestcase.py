@@ -1,4 +1,4 @@
-# emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: t -*-
+﻿# emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: t -*-
 # vi: set ft=python sts=4 ts=4 sw=4 noet :
 
 # This file is part of Fail2Ban.
@@ -31,6 +31,7 @@ import tempfile
 from server.jail import Jail
 from server.filterpoll import FilterPoll
 from server.filter import FileFilter, DNSUtils
+from server.ai_filter import AIFilter
 from server.failmanager import FailManager
 from server.failmanager import FailManagerEmpty
 
@@ -159,7 +160,7 @@ class IgnoreIP(unittest.TestCase):
 
 class LogFile(unittest.TestCase):
 
-	FILENAME = "testcases/files/testcase01.log"
+	FILENAME = "testcases/files/filter.d/ats-ddos-model.conf"#"testcases/files/testcase01.log"
 
 	def setUp(self):
 		"""Call before every test case."""
@@ -180,6 +181,7 @@ class LogFile(unittest.TestCase):
 class LogFileMonitor(unittest.TestCase):
 	"""Few more tests for FilterPoll API
 	"""
+
 	def setUp(self):
 		"""Call before every test case."""
 		self.filter = self.name = 'NA'
@@ -207,7 +209,7 @@ class LogFileMonitor(unittest.TestCase):
 	def notModified(self):
 		# shorter wait time for not modified status
 		return not self.isModified(0.4)
-
+		
 	def testNewChangeViaIsModified(self):
 		# it is a brand new one -- so first we think it is modified
 		self.assertTrue(self.isModified())
@@ -494,11 +496,14 @@ def get_monitor_failures_testcase(Filter_):
 
 class GetFailures(unittest.TestCase):
 
+	FILENAME_ATS = "testcases/files/testcase-ats.log"
 	FILENAME_01 = "testcases/files/testcase01.log"
 	FILENAME_02 = "testcases/files/testcase02.log"
 	FILENAME_03 = "testcases/files/testcase03.log"
 	FILENAME_04 = "testcases/files/testcase04.log"
 	FILENAME_USEDNS = "testcases/files/testcase-usedns.log"
+
+	FAIL_MODEL_FILENAME = "testcases/files/filter.d/ats-ddos-model.conf"
 
 	# so that they could be reused by other tests
 	FAILURES_01 = ('193.168.0.128', 3, 1124013599.0,
@@ -506,7 +511,7 @@ class GetFailures(unittest.TestCase):
 
 	def setUp(self):
 		"""Call before every test case."""
-		self.filter = FileFilter(None)
+		self.filter = AIFilter(None)
 		self.filter.setActive(True)
 		# TODO Test this
 		#self.filter.setTimeRegex("\S{3}\s{1,2}\d{1,2} \d{2}:\d{2}:\d{2}")
@@ -515,6 +520,18 @@ class GetFailures(unittest.TestCase):
 	def tearDown(self):
 		"""Call after every test case."""
 
+
+	def readFailModel(self):
+		#read the test model
+		model_file = open(self.FAIL_MODEL_FILENAME)
+		#read the failmodel attribiute
+		fail_model = None
+		for cur_line in model_file:
+			if ("=" in cur_line) and (cur_line[:cur_line.index("=")].strip()=="failmodel"):
+				fail_model = cur_line[cur_line.index("=")+1:].strip()
+				break
+				
+		return fail_model		
 
 
 	def testGetFailures01(self):
@@ -591,6 +608,13 @@ class GetFailures(unittest.TestCase):
 		self.filter.addFailRegex("Accepted .* from <HOST>")
 		self.filter.getFailures(GetFailures.FILENAME_02)
 		_assert_correct_last_attempt(self, self.filter, output)
+
+	def testGetFailuresFailModel(self):
+		output = ""
+
+		self.filter.addLogPath(GetFailures.FILENAME_ATS)
+		self.filter.addFailModel(self.readFailModel())
+		self.filter.getFailures(GetFailures.FILENAME_ATS)
 
 	def testGetFailuresIgnoreRegex(self):
 		output = ('141.3.81.106', 8, 1124013541.0)
