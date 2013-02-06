@@ -155,6 +155,10 @@ class Transmitter:
 			value = int(command[2])
 			self.__server.delIgnoreRegex(name, value)
 			return self.__server.getIgnoreRegex(name)
+		elif command[1] == "failmodel":
+			value = command[2]
+			self.__server.addFailModel(name, value)
+			return self.__server.getFailModel(name)
 		elif command[1] == "usedns":
 			value = command[2]
 			self.__server.setUseDns(name, value)

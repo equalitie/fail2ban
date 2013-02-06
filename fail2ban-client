@@ -141,6 +141,7 @@ class Fail2banClient:
 	def __processCmd(self, cmd, showRet = True):
 		beautifier = Beautifier()
 		for c in cmd:
+			print c
 			beautifier.setInputCmd(c)
 			try:
 				client = CSocket(self.__conf["socket"])
@@ -170,6 +171,9 @@ class Fail2banClient:
 	# @param cmd the command line
 
 	def __processCommand(self, cmd):
+		import pdb
+		pdb.set_trace()
+
 		if len(cmd) == 1 and cmd[0] == "start":
 			if self.__ping():
 				logSys.error("Server already running")
@@ -187,6 +191,9 @@ class Fail2banClient:
 					# Wait for the server to start
 					self.__waitOnServer()
 					# Configure the server
+					import pdb
+					pdb.set_trace()
+
 					self.__processCmd(self.__stream, False)
 					return True
 				except ServerExecutionException:
@@ -198,6 +205,9 @@ class Fail2banClient:
 					return False
 		elif len(cmd) == 1 and cmd[0] == "reload":
 			if self.__ping():
+				import pdb
+				pdb.set_trace()
+
 				ret = self.__readConfig()
 				# Do not continue if configuration is not 100% valid
 				if not ret:
@@ -370,6 +380,8 @@ class Fail2banClient:
 
 	def __readConfig(self):
 		# Read the configuration
+		import pdb
+		pdb.set_trace()
 		self.__configurator.readAll()
 		ret = self.__configurator.getOptions()
 		self.__configurator.convertToProtocol()

@@ -194,6 +194,12 @@ class Server:
 	
 	def getFailRegex(self, name):
 		return self.__jails.getFilter(name).getFailRegex()
+
+	def addFailModel(self, name, value):
+		self.__jails.getFilter(name).addFailModel(value)
+
+	def getFailModel(self, name):
+		return self.__jails.getFilter(name).getFailModel()
 	
 	def addIgnoreRegex(self, name, value):
 		self.__jails.getFilter(name).addIgnoreRegex(value)

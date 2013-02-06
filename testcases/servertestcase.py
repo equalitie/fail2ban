@@ -127,4 +127,22 @@ class Transmitter(unittest.TestCase):
 				jail = self.__server.jails[name]
 				self.assertEqual(jail.getFilter().failManager.size(), 0)
 				self.assertEqual(jail.getAction().banManager.size(), 2)
-		
+
+	def testAIJail(self):
+		name = "TestCase"
+		cmdList = [["add", name],
+				   ["set", name, "logpath", "testcases/files/testcase01.log"],
+				   ["set", name, "timeregex", "\S{3}\s{1,2}\d{1,2} \d{2}:\d{2}:\d{2}"],
+				   ["set", name, "timepattern", "%b %d %H:%M:%S"],
+				   ["set", name, "failmodel", "Blah Blah Blah"],
+				   ["start", name],
+				   ["stop", name],
+				   ["quit"]]
+				  
+		for cmd in cmdList:
+			self.__server.transm.proceed(cmd)
+			if cmd == ["start", name]:
+				time.sleep(2)
+				jail = self.__server.jails[name]
+				self.assertEqual(jail.getFilter().failManager.size(), 0)
+				self.assertEqual(jail.getAction().banManager.size(), 2)

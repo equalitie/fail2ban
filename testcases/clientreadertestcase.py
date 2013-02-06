@@ -21,7 +21,7 @@
 # 
 # $Revision$
 
-__author__ = "Cyril Jaquier"
+__author__ = "Cyril Jaquier, Vmon"
 __version__ = "$Revision$"
 __date__ = "$Date$"
 __copyright__ = "Copyright (c) 2004 Cyril Jaquier"
@@ -44,3 +44,19 @@ class JailReaderTest(unittest.TestCase):
 		result = JailReader.splitAction(action)
 		self.assertEquals(expected, result)
 		
+	def testFailModelRead(self):
+		"""
+		Test that the client can successfully read a fail model and
+		send it to the server
+		"""
+		#Naive way to reach "testcases/files"
+		#TODO: Look at other tests and see how thay do that. I suspect
+		#that it all happens in fail2ban-testcases
+		from os.path import dirname
+		test_dir  = dirname(__file__)
+
+		
+		fail_model_jail = JailReader("ats-ddos-model")
+		fail_model_jail.setBaseDir(test_dir + "/files")
+		fail_model_jail.read()
+		fail_model_jail.getOptions()
